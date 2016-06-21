@@ -13,17 +13,17 @@ int process_line(string line)
 
 	int L=-1, R=-1, prevR=-1;
 	char tmp, comma;
-	int followingpair=0;
+	int start_of_line=1;
 	stringstream buffer(line);
-	cout << "process line:" << line << endl;
+//	cout << "process line:" << line << endl;
 	while(!buffer.eof()){
-		if(followingpair==1){
+		if(start_of_line==1){
+			start_of_line = 0;
+		}
+		else{
 			buffer>>comma;
 //			cout << "comma:" << comma << endl;
-			
 		}
-		else
-			followingpair = 1;
 		buffer>>L;
 //		cout << "L:" << L << endl;
 		buffer>>tmp;
