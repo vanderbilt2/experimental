@@ -1,3 +1,4 @@
+// Own implementation using circular buffer and map.
 class LRUCache {
     int cap;
     int *buffer;
