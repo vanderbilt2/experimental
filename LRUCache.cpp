@@ -1,42 +1,54 @@
-// Own implementation using circular buffer and map.
+// using double linked list implementation. test ok, run time error.
 class LRUCache {
     int cap;
-    int *buffer;
-    int p;
-    map<int, int> memory;
+    int c;
+    list<pair<int,int>> dl;
+    map<int, list<pair<int,int>>::iterator> memory;
 public:
     LRUCache(int capacity) {
         cap = capacity;
-        buffer = new int[cap];
-        p = 0;
+        c = 0;
     }
     
     int get(int key) {
-        if(memory.find(key)!=memory.end())
-            return memory[key];
+        if(memory.find(key)!=memory.end()){
+            auto p = memory[key];
+            int val = p->first;
+            // remove from dl;
+            dl.erase(p);
+            // add into dl;
+            dl.push_front(make_pair(val, key));
+            // return value
+            return val;
+        }
         return -1;
     }
     
     void put(int key, int value) {
-        if(memory.find(key)==memory.end()){
-            if(buffer[p] != 0)
-                memory.remove(buffer[p]);
-            buffer[p] = key;            
-            memory[key] = value;
-
-            p = (p+1) % cap;
+        if(memory.find(key) != memory.end()){
+            auto p = memory[key];
+            // remove from dl;
+            dl.erase(p);
+            // add into dl;
+            dl.push_front(make_pair(value, key));
+            return;
         }
-        else{
-            memory[key] = value;
-            int currp = p;
-            for(int i=0; i<currp-1; ++){
-                if(buffer[i] = key){
-                    for(int j=i+1; j<=p; ++j){
-                        swap(buffer[j], buffer[j-1]);
-                    }
-                }
-            }
+        if(c==cap){  // remove one
+            auto p = dl.back();
+            memory.erase(p.second);
+            dl.pop_back();
+            c--;
         }
-        
+        dl.push_front(make_pair(value, key));
+        list<pair<int,int>>::iterator f = dl.begin();
+        memory[key] = f;
+        c++;
     }
 };
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache* obj = new LRUCache(capacity);
+ * int param_1 = obj->get(key);
+ * obj->put(key,value);
+ */
