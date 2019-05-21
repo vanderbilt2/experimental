@@ -35,3 +35,37 @@ public:
         return (count == 0);
     }
 };
+
+// solution-2, self, passed:
+class Solution {
+public:
+    bool validUtf8(vector<int>& data) {
+        int curr = 0;
+        while(curr<data.size()){
+            int val = data[curr];
+            int n_ = 0;
+            int mask = 1<<7;
+            while (mask & val){
+                n_++;
+                mask = mask>>1;
+                if(n_>4)
+                    return false;
+            }
+            if(n_==0) {
+                curr++;
+                continue;
+            };
+            if(n_==1) return false;
+            for(int i=1+curr; i<n_+curr; ++i){
+                if(i+1>data.size()) return false;
+                int val = data[i];
+                if(!((val & (1<<7)) &&
+                   (!(val & (1<<6))) ))
+                    return false;
+                
+            }
+            curr += n_;            
+        }
+        return true;
+    }
+};
